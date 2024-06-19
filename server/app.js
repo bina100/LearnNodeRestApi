@@ -3,7 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer')
 
-const feedRoutes = require('./routes/feed');
+const feedRoutes = require('../server/routes/feed');
+const authRoutes = require('../server/routes/auth');
 const { default: mongoose } = require('mongoose');
 const app = express();
 
@@ -41,12 +42,14 @@ app.use((req, res, next)=>{
 })
 
 app.use('/feed', feedRoutes);
+app.use('/auth', authRoutes);
 
 app.use((error, req, res, next)=>{
     console.log(error);
     const status = error.statusCode
     const message = error.message
-    res.status(status).json({message:message})
+    const data = error.data
+    res.status(status).json({message:message, data:data})
 })
 
 mongoose.connect('mongodb+srv://binaro97:7kYHbTN6C3aYrZMr@cluster0.4v5prio.mongodb.net/feed?retryWrites=true&w=majority&appName=Cluster0')
