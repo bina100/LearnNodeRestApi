@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator')
 
 const Post = require('../models/post')
 const User = require('../models/user')
+const user = require('../models/user')
 
 exports.getPosts = (req, res, next) => {
     const currentPage = req.query.page || 1
@@ -124,6 +125,11 @@ exports.updatePost = (req, res, next) => {
                 error.statusCode = 404
                 throw error
             }
+            if(post.creator.toString() !== req.userId){
+                const error = new Error('Not authorized!.')
+                error.statusCode = 403
+                throw error
+            }
             if (imageUrl !== post.imageUrl) {
                 clearImage(post.imageUrl)
             }
@@ -136,7 +142,7 @@ exports.updatePost = (req, res, next) => {
             res.status(200).json({ message: 'Post updated!', post: result })
         })
         .catch(err => {
-            if (err.statusCode) {
+            if (!err.statusCode) {
                 err.statusCode = 500
             }
             next(err)
@@ -153,14 +159,26 @@ exports.deletePost = (req, res, next) => {
                 error.statusCode = 404
                 throw error
             }
+            if(post.creator.toString() !== req.userId){
+                const error = new Error('Not authorized!.')
+                error.statusCode = 403
+                throw error
+            }
             clearImage(post.imageUrl)
             return Post.findByIdAndDelete(postId)
         })
         .then(result => {
+            return User.findById(req.userId)
+        })
+        .then(user=>{
+            user.posts.pull(postId)
+            return user.save()
+        })
+        .then(result=>{
             res.status(200).json({ message: 'Deleted post.' })
         })
         .catch(err => {
-            if (err.statusCode) {
+            if (!err.statusCode) {
                 err.statusCode = 500
             }
             next(err)
