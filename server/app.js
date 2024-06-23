@@ -54,8 +54,10 @@ app.use((error, req, res, next)=>{
 
 mongoose.connect('mongodb+srv://binaro97:7kYHbTN6C3aYrZMr@cluster0.4v5prio.mongodb.net/feed?retryWrites=true&w=majority&appName=Cluster0')
 .then(result=>{
-    app.listen(8080, () => {
-        console.log('Server is running on port 8080');
-    });
+    const server = app.listen(8080);
+    const io = require('./socket').init(server)
+    io.on('connection', socket=>{
+        console.log('Client connected');
+    })
 })
 .catch(err=>console.log(err))
