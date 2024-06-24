@@ -121,7 +121,6 @@ class App extends Component {
       })
     })
       .then(res => {
-        console.log(res);
         if (res.status === 422) {
           throw new Error(
             "Validation failed. Make sure the email address isn't used yet!"
