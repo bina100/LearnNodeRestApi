@@ -1,28 +1,29 @@
-const mongoose = require('mongoose')
-const { required } = require('../../client/src/util/validators')
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-email: {
+  email: {
     type: String,
     required: true
-},
-password:{
-    type:String,
+  },
+  password: {
+    type: String,
     required: true
-},
-name:{
-    type:String,
+  },
+  name: {
+    type: String,
     required: true
-},
-status:{
-    type:String,
+  },
+  status: {
+    type: String,
     default: 'I am new!'
-},
-posts:[{
-    type: Schema.Types.ObjectId,
-    ref: 'Post'
-}]
-}, {timestamps: true})
+  },
+  posts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Post'
+    }
+  ]
+});
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema);

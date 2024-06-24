@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { validationResult } = require('express-validator')
+const { validationResult } = require('express-validator');
 
 const io = require('../socket')
 const Post = require('../models/post')
@@ -15,7 +15,7 @@ exports.getPosts = async (req, res, next) => {
         totalItems = await Post.find().countDocuments()
         const posts = await Post.find()
             .populate('creator')
-            .skip((clearImage - 1) * perPage)
+            .skip((currentPage - 1) * perPage)
             .limit(perPage)
         res.status(200).json({
             message: 'Fetched posts successfully.',
@@ -58,12 +58,13 @@ exports.createPost = async (req, res, next) => {
         await post.save()
         const user = await User.findById(req.userId)
         user.posts.push(post)
-        await user.save()
+        const savedUser = await user.save()
         res.status(201).json({
             message: 'Post created successfully!',
             post: post,
             creator: { _id: user._id, name: user.name }
         })
+        return savedUser
 
     } catch (err) {
         if (!err.statusCode) {
