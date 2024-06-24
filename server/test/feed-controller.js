@@ -52,10 +52,15 @@ describe('Feed Controller', function () {
             userId: '6673bc589eca2c04ed3a1ed6'
 
         };
-        const res = { status: function () { }, json: function () { } }
-        FeedController.createPost(req, res, () => { }).then(result => {
-            expect(result).to.be.an('error');
-            expect(result.statusCode).to.equal(500);
+        const res = {
+            status: function () {
+                return this
+            },
+            json: function () {}
+        }
+        FeedController.createPost(req, res, () => { }).then((savedUser) => {
+            expect(savedUser).to.have.property('posts');
+            expect(savedUser.posts).to.have.length(1);
             done();
         }).catch(err => done(err));
     });
