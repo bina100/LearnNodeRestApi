@@ -1,7 +1,7 @@
 // import { expect } from 'chai';
 // import jwt from 'jsonwebtoken'
 // import sinon from 'sinon'
-// import authMiddleware from '../middleware/is-auth.js';
+// import authMiddleware from '../middleware/auth.js';
 
 // describe('Auth middleware', function(){
 //   it('should throw an error if no authorization header is present', function () {
